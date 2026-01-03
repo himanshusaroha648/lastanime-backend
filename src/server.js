@@ -28,16 +28,22 @@ app.use(cors());
 app.use(express.json());
 
 // Register routes
-app.use('/api/auth', authRoutes); // Auth routes already prefixed with /api/auth
+app.use('/api/auth', authRoutes);
 app.use('/api', contentRoutes);
 app.use('/api', favoritesRoutes);
 app.use('/api', watchHistoryRoutes);
 app.use('/api', commentsRoutes);
 
-// Debug: Log registered routes to verify mount points
-console.log('Mounting routes...');
-console.log(' - Auth routes mounted at /api/auth');
-console.log(' - Content routes mounted at /api');
+// Detailed error logging middleware
+app.use((err, req, res, next) => {
+  console.error('❌ Server Error:', err);
+  res.status(500).json({ error: 'Internal Server Error', details: err.message });
+});
+
+app.use((req, res) => {
+  console.log(`❌ 404 - ${req.method} ${req.originalUrl} not found`);
+  res.status(404).json({ error: 'Endpoint not found', path: req.originalUrl });
+});
 
 console.log('🚀 Starting AniVerse Supabase API Server...');
 console.log(`📡 Supabase URL: ${supabaseUrl}`);
