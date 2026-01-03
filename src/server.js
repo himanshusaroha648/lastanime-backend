@@ -28,17 +28,16 @@ app.use(cors());
 app.use(express.json());
 
 // Register routes
+app.use('/api/auth', authRoutes); // Auth routes already prefixed with /api/auth
 app.use('/api', contentRoutes);
-app.use('/api/auth', authRoutes);
 app.use('/api', favoritesRoutes);
 app.use('/api', watchHistoryRoutes);
 app.use('/api', commentsRoutes);
 
-// Detailed route logging for debugging
-console.log('Registered Routes:');
-console.log(' - POST /api/auth/forgot-password');
-console.log(' - POST /api/auth/signin');
-console.log(' - POST /api/auth/signup');
+// Debug: Log registered routes to verify mount points
+console.log('Mounting routes...');
+console.log(' - Auth routes mounted at /api/auth');
+console.log(' - Content routes mounted at /api');
 
 console.log('🚀 Starting AniVerse Supabase API Server...');
 console.log(`📡 Supabase URL: ${supabaseUrl}`);
