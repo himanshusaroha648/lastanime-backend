@@ -14,20 +14,21 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: parseInt(process.env.SMTP_PORT) || 587,
-  secure: process.env.SMTP_PORT == '465', // true for 465, false for other ports
+  secure: false, // Must be false for port 587 (STARTTLS)
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS
   },
-  pool: true, // Use connection pool
-  maxConnections: 1, // Keep it simple for serverless/small instances
+  tls: {
+    // Do not fail on invalid certs
+    rejectUnauthorized: false
+  },
+  pool: true,
+  maxConnections: 1,
   maxMessages: Infinity,
-  connectionTimeout: 20000, // 20 seconds
+  connectionTimeout: 20000,
   greetingTimeout: 20000,
-  socketTimeout: 30000,
-  dnsTimeout: 10000,
-  debug: true,
-  logger: true
+  socketTimeout: 30000
 });
 
 // Verify connection configuration
