@@ -10,7 +10,7 @@ const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABAS
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Nodemailer Transporter
+// Nodemailer Transporter with connection pool and optimized settings
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: parseInt(process.env.SMTP_PORT) || 587,
@@ -18,6 +18,24 @@ const transporter = nodemailer.createTransport({
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS
+  },
+  pool: true, // Use connection pool
+  maxConnections: 1, // Keep it simple for serverless/small instances
+  maxMessages: Infinity,
+  connectionTimeout: 20000, // 20 seconds
+  greetingTimeout: 20000,
+  socketTimeout: 30000,
+  dnsTimeout: 10000,
+  debug: true,
+  logger: true
+});
+
+// Verify connection configuration
+transporter.verify(function(error, success) {
+  if (error) {
+    console.error('SMTP Connection Error (Pre-verification):', error);
+  } else {
+    console.log('SMTP Server is ready to take our messages');
   }
 });
 
