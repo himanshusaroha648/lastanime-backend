@@ -34,6 +34,11 @@ app.use('/api', favoritesRoutes);
 app.use('/api', watchHistoryRoutes);
 app.use('/api', commentsRoutes);
 
+// Root path for Render health check
+app.get('/', (req, res) => {
+  res.json({ status: 'ok', message: 'AniVerse API is running' });
+});
+
 // Detailed error logging middleware
 app.use((err, req, res, next) => {
   console.error('❌ Server Error:', err);
