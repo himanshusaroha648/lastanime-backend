@@ -1,0 +1,22 @@
+# Render deployment configuration for AniVerse Backend
+services:
+  - type: web
+    name: aniverse-backend
+    env: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: TMDB_API_KEY
+        sync: false
+      - key: PROXY_LIST
+        value: ""
+    healthCheckPath: /health

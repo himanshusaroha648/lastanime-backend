@@ -1,0 +1,37 @@
+{
+  "name": "aniverse-backend-scraper",
+  "version": "1.0.0",
+  "description": "AniVerse Backend - Episode Scraper & TMDB Sync for Supabase",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node src/index.js",
+    "scrape": "node src/scraper.js",
+    "sync": "node src/supabase-sync.js",
+    "watch": "node src/scraper.js --watch",
+    "test": "node src/scraper.js --test"
+  },
+  "keywords": [
+    "anime",
+    "scraper",
+    "tmdb",
+    "supabase",
+    "episode-tracker"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.81.1",
+    "axios": "^1.13.2",
+    "cheerio": "^1.1.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "https-proxy-agent": "^7.0.6",
+    "nodemailer": "^6.9.7"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
