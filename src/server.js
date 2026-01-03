@@ -14,45 +14,30 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const supabaseKey = process.env.SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseAnonKey) {
+if (!supabaseUrl || !supabaseKey) {
   console.error('❌ ERROR: SUPABASE_URL and SUPABASE_ANON_KEY must be set');
-  console.error('Please configure these environment variables in Render/Replit Secrets');
+  console.error('Please configure these environment variables in Replit Secrets');
   process.exit(1);
 }
 
-if (!supabaseServiceKey) {
-  console.warn('⚠️  WARNING: SUPABASE_SERVICE_ROLE_KEY not set. Some admin functions may not work.');
-}
-
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 app.use(cors());
 app.use(express.json());
 
-// Request logging middleware
-app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
-  next();
-});
-
 // Register routes
+app.use('/api/auth', authRoutes); // Auth routes already prefixed with /api/auth
 app.use('/api', contentRoutes);
-app.use('/api/auth', authRoutes);
 app.use('/api', favoritesRoutes);
 app.use('/api', watchHistoryRoutes);
 app.use('/api', commentsRoutes);
 
-// Detailed route logging for debugging
-console.log('Registered Auth Routes:');
-console.log(' - POST /api/auth/forgot-password');
-console.log(' - POST /api/auth/reset-password');
-console.log(' - POST /api/auth/signin');
-console.log(' - POST /api/auth/signup');
-console.log(' - POST /api/auth/logout');
-console.log(' - POST /api/auth/send-otp');
+// Debug: Log registered routes to verify mount points
+console.log('Mounting routes...');
+console.log(' - Auth routes mounted at /api/auth');
+console.log(' - Content routes mounted at /api');
 
 console.log('🚀 Starting AniVerse Supabase API Server...');
 console.log(`📡 Supabase URL: ${supabaseUrl}`);
@@ -71,8 +56,6 @@ app.get('/', (req, res) => {
         latestEpisodes: 'GET /api/latest-episodes'
       },
       auth: {
-        forgotPassword: 'POST /api/auth/forgot-password',
-        resetPassword: 'POST /api/auth/reset-password',
         sendOtp: 'POST /api/auth/send-otp',
         signup: 'POST /api/auth/signup',
         signin: 'POST /api/auth/signin',
@@ -98,10 +81,8 @@ app.get('/', (req, res) => {
 });
 
 
-// 404 handler - must be last
 app.use((req, res) => {
-  console.log(`❌ 404 - ${req.method} ${req.path} not found`);
-  res.status(404).json({ error: 'Endpoint not found', path: req.path, method: req.method });
+  res.status(404).json({ error: 'Endpoint not found' });
 });
 
 app.listen(PORT, '0.0.0.0', () => {
@@ -116,8 +97,6 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log('   - GET /api/latest-episodes');
   console.log('');
   console.log('📊 Auth Endpoints:');
-  console.log('   - POST /api/auth/forgot-password');
-  console.log('   - POST /api/auth/reset-password');
   console.log('   - POST /api/auth/send-otp');
   console.log('   - POST /api/auth/signup');
   console.log('   - POST /api/auth/signin');
